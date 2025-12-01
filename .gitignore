@@ -3,10 +3,14 @@
 # dependencies
 /node_modules
 /.pnp
+/.project
+/.settings
+/coverage
+/package-lock.json
+
 .pnp.js
 
 # testing
-/coverage
 
 # production
 
@@ -20,5 +24,3 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-/package-lock.json
-/.project

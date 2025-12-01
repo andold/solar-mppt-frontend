@@ -28,7 +28,8 @@ const HOURS = [
 	{hours: 24 * 7 * 5, title: "한달"},
 	{hours: 24 * 7 * 9, title: "두달"},
 	{hours: 24 * 7 * 26, title: "6 개월"},
-	{hours: 24 * 7 * 53, title: "1 년"},
+	{hours: 24 * 366, title: "1 년"},
+	{hours: 24 * 366 * 2, title: "2 년"},
 ];
 
 // SolarMpptContainer.tsx
@@ -76,6 +77,7 @@ export default ((props: any) => {
 			pageSize: 1024 * 1024,
 			size: 1024 * 1024,
 		};
+/*
 		store.search(request, (_: any, result: any) => {
 			const searched: SolarMpptModel[] = result?.crud?.duplicates;
 
@@ -89,6 +91,7 @@ export default ((props: any) => {
 			
 			setModels(searched);
 		});
+*/
 	}, [form]);
 
 	return (<>

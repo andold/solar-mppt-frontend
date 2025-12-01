@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import Highcharts from "highcharts";
 import "highcharts";
+import 'highcharts/highcharts-more';
 import HighchartsReact from "highcharts-react-official";
 import moment from "moment";
 
@@ -173,8 +174,11 @@ export default ((props: any) => {
 				updated: "",
 			};
 			searched.forEach((p: SolarMpptModel) => {
+				if (isValidNumber(p.temperatureMin)) {
+					min.temperature = Math.min(min.temperature, p.temperatureMin);
+				}
 				if (isValidNumber(p.temperature)) {
-					min.temperature = Math.min(min.temperature, p.temperatureMin, p.temperature);
+					min.temperature = Math.min(min.temperature, p.temperature);
 					max.temperature = Math.max(max.temperature, p.temperature);
 				}
 				if (isValidNumber(p.discharge)) {
@@ -185,8 +189,11 @@ export default ((props: any) => {
 					min.charge = Math.min(min.charge, p.charge);
 					max.charge = Math.max(max.charge, p.charge);
 				}
+				if (isValidNumber(p.voltageMin)) {
+					min.voltage = Math.min(min.voltage, p.voltageMin);
+				}
 				if (isValidNumber(p.voltage)) {
-					min.voltage = Math.min(min.voltage, p.voltageMin, p.voltage);
+					min.voltage = Math.min(min.voltage, p.voltage);
 					max.voltage = Math.max(max.voltage, p.voltage);
 				}
 				if (Number.isNaN(min.temperature)
