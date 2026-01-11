@@ -60,24 +60,6 @@ function isValidNumber(value: number): boolean {
 	
 	return true;
 }
-function yAxisMinMaxTickAmount(min: number, max: number, t: number): any {
-	let tickAmount: number = (max - min) / 0.1 + 2;
-	let result: any = {
-		min: min - t,
-		max: max + t,
-		tickAmount: tickAmount,
-	}
-	if (tickAmount > 7) {
-		tickAmount = Math.floor((max - min) / (t * 2)) + 2;
-		result = {
-			min: min - t * 2,
-			max: max + t * 2,
-			tickAmount: tickAmount,
-		}
-	}
-
-	return result;
-}
 // HighchartsView.tsx
 export default ((props: any) => {
 	const { show, form } = props;
