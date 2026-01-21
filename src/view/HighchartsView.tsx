@@ -96,13 +96,14 @@ export default ((props: any) => {
 			size: 1024 * 1024,
 		};
 		store.search(request, ( searched: SolarMpptModel[]) => {
-			searched.map((model: SolarMpptModel) => {
+			searched.forEach((model: SolarMpptModel) => {
 				const date = new Date(model.base);
 				model.custom = {
 					...model.custom,
 					date: date,
 				};
 			});
+//			console.log(searched);
 			
 			const series: any[] = [];
 			series.push({
@@ -156,41 +157,38 @@ export default ((props: any) => {
 				updated: "",
 			};
 			searched.forEach((p: SolarMpptModel) => {
-				if (isValidNumber(p.temperatureMin)) {
-					min.temperature = Math.min(min.temperature, p.temperatureMin);
-				}
-				if (isValidNumber(p.temperature)) {
-					min.temperature = Math.min(min.temperature, p.temperature);
-					max.temperature = Math.max(max.temperature, p.temperature);
-				}
-				if (isValidNumber(p.discharge)) {
-					min.discharge = Math.min(min.discharge, p.discharge);
-					max.discharge = Math.max(max.discharge, p.discharge);
-				}
-				if (isValidNumber(p.charge)) {
-					min.charge = Math.min(min.charge, p.charge);
-					max.charge = Math.max(max.charge, p.charge);
-				}
-				if (isValidNumber(p.voltageMin)) {
-					min.voltage = Math.min(min.voltage, p.voltageMin);
-				}
-				if (isValidNumber(p.voltage)) {
-					min.voltage = Math.min(min.voltage, p.voltage);
-					max.voltage = Math.max(max.voltage, p.voltage);
-				}
-				if (Number.isNaN(min.temperature)
-					|| Number.isNaN(min.discharge)
-					|| Number.isNaN(min.charge)
-					|| Number.isNaN(min.voltage)
-				) {
-					console.log(p, min, max);
-				}
-			}),
-			console.log(min, max);
-			let tickAmount: number = (Math.max(max.charge, max.discharge) - Math.min(min.charge, min.discharge)) / 0.1 + 2;
-			if (tickAmount > 7) {
-				tickAmount = Math.floor((Math.max(max.charge, max.discharge) - Math.min(min.charge, min.discharge)) / 0.2) + 2;
-			}
+				min.temperature = Math.min(min.temperature,
+					isValidNumber(p.temperature) ? p.temperature : min.temperature,
+					isValidNumber(p.temperatureMin) ? p.temperatureMin : min.temperature,
+				);
+				max.temperature = Math.max(max.temperature,
+					isValidNumber(p.temperature) ? p.temperature : max.temperature,
+				);
+				min.charge = Math.min(min.charge,
+					isValidNumber(p.charge) ? p.charge : min.charge,
+				);
+				max.charge = Math.max(max.charge,
+					isValidNumber(p.charge) ? p.charge : max.charge,
+				);
+				min.discharge = Math.min(min.discharge,
+					isValidNumber(p.discharge) ? p.discharge : min.discharge,
+				);
+				max.discharge = Math.max(max.discharge,
+					isValidNumber(p.discharge) ? p.discharge : max.discharge,
+				);
+				min.voltage = Math.min(min.voltage,
+					isValidNumber(p.voltage) ? p.voltage : min.voltage,
+					isValidNumber(p.voltageMin) ? p.voltageMin : min.voltage,
+				);
+				max.voltage = Math.max(max.voltage,
+					isValidNumber(p.voltage) ? p.voltage : max.voltage,
+				);
+			});
+			let deltaAmpere = (Math.max(max.charge, max.discharge) - Math.min(min.charge, min.discharge));
+			let tickIntervalAmpere = Math.max(0.1, Math.round(deltaAmpere * 10 / 5) / 10);
+			let tickIntervalVoltage = Math.max(0.1, Math.round((max.voltage - min.voltage) * 10 / 5) / 10);
+			let tickIntervalTemperature = Math.max(0.1, Math.round((max.temperature - min.temperature) * 10 / 5) / 10);
+//			console.log(tickIntervalAmpere, tickIntervalVoltage, tickIntervalTemperature, min, max)
 			setOptions({
 				...OPTIONS,
 				yAxis: [{
@@ -198,18 +196,21 @@ export default ((props: any) => {
 					format: "{value:.1f}",
 					id: "ampere",
 					opposite: false,
+					tickInterval: tickIntervalAmpere,
 					title: null,
 				}, {
 					//...yAxisMinMaxTickAmount(Math.min(min.voltage, min.voltage), Math.max(max.voltage, max.voltage), 0.1),
 					format: "{value:.1f}",
 					id: "voltage",
 					opposite: true,
+					tickInterval: tickIntervalVoltage,
 					title: null,
 				}, {
 					//...yAxisMinMaxTickAmount(Math.min(min.temperature, min.temperature), Math.max(max.temperature, max.temperature), 0.1),
 					format: "{value:.1f}",
 					id: "temperature",
 					opposite: true,
+					tickInterval: tickIntervalTemperature,
 					title: null,
 				}],
 				series: series,
