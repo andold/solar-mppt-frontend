@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Col, Row } from "react-bootstrap";
-import Highcharts from "highcharts";
-import HighchartsReact from "highcharts-react-official";
 import moment from "moment";
+
+// highchart
+import Highcharts from 'highcharts';
+import HighchartsReact from 'highcharts-react-official';
 
 // domain
 import SolarMpptModel from "../model/SolarMpptModel";
@@ -10,8 +12,35 @@ import SolarMpptModel from "../model/SolarMpptModel";
 // store
 import store from "../store/TsdbStore";
 
+// 1. .default를 붙여서 실제 함수를 추출합니다.
+const HighchartsMore = require('highcharts/highcharts-more').default;
+const Highcharts3D = require('highcharts/highcharts-3d').default;
+const Accessibility = require('highcharts/modules/accessibility').default;
+
+// 2. 만약 위 방법도 안 된다면 (환경에 따라 다름), 아래와 같이 시도하세요.
+// const HighchartsMore = require('highcharts/highcharts-more');
+// (HighchartsMore.default || HighchartsMore)(Highcharts);
+// // Initialize them
+// 초기화 실행
+if (typeof HighchartsMore === 'function') HighchartsMore(Highcharts);
+if (typeof Highcharts3D === 'function') Highcharts3D(Highcharts);
+if (typeof Accessibility === 'function') Accessibility(Highcharts);
+Highcharts.setOptions({
+	lang: {
+		weekdays: ["일", "월", "화", "수", "목", "금", "토", ],
+		shortWeekdays: ["일", "월", "화", "수", "목", "금", "토", ],
+		numericSymbolMagnitude: 10000,
+		numericSymbols: ["만", "억", "조"],
+		thousandsSep: ",",
+	},
+	time: {
+		timezone: "Asia/Seoul",
+	},
+});
+
 const OPTIONS = {
 	chart: {
+		type: "line",
 		zooming: {
 			type: "x",
 		},
@@ -45,19 +74,6 @@ const OPTIONS = {
 		timezone: "Asia/Seoul",
 	},
 };
-
-Highcharts.setOptions({
-	lang: {
-		weekdays: ["일", "월", "화", "수", "목", "금", "토", ],
-		shortWeekdays: ["일", "월", "화", "수", "목", "금", "토", ],
-		numericSymbolMagnitude: 10000,
-		numericSymbols: ["만", "억", "조"],
-		thousandsSep: ",",
-	},
-	time: {
-		timezone: "Asia/Seoul",
-	},
-});
 
 function isValidNumber(value: number): boolean {
 	if (typeof(value) === "undefined" || value === null || Number.isNaN(value)) {
