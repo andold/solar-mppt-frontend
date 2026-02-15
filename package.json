@@ -2,7 +2,7 @@
 	"name": "reactjs",
 	"version": "0.1.0",
 	"private": true,
-	"proxy": "http://dev.andold.kr/exercise",
+	"proxy": "http://dev.andold.kr",
 	"homepage": ".",
 	"dependencies": {
 		"@testing-library/jest-dom": "^5.16.4",
